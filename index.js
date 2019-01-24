@@ -17,6 +17,8 @@ app.use(bodyParser.urlencoded());
   app.post('/webhook', async(req, body) => {
     let data = req.body;
      console.console.log(data);
+
+     res.json(data); // on return ce que n'a recu 
   })
 
 
