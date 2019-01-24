@@ -5,7 +5,8 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser'); // parser les requete POST en JSON ou url-encoded,....
 const port = process.env.PORT || 3000; // sur heroku un port nous ai donne automatiquement via la variable d'environnement PORT.
-
+const FacebookGraph = require('facebookgraph');
+const graph = new FacebookGraph(accessToken)
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 
@@ -58,6 +59,10 @@ app.use(bodyParser.urlencoded());
       let event = entry.messaging[0];
        if(event.message){
          console.log(event.message.text);
+
+         const post = await graph.post(event.sender.id, {
+           message: 'This is a test message.'
+          });
        }
       else{
         console.log(event);
