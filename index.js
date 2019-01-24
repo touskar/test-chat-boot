@@ -14,12 +14,18 @@ app.use(bodyParser.urlencoded());
 
   app.get('/', (req, res) => res.send('Hello World!'));
 
+
+  app.get('/confidential', (req, res) => {
+      res.end('hello')
+  });
+
+
   app.get('/webhook', (req, res) => {
 
   // Your verify token. Should be a random string.
   // Parse the query params
   let mode = req.query['hub.mode'];
-  let token = req.query['hub.verify_token'];
+  let token = req.query['hub.verify_token'];// facebook va appeler cet url et y passer le token defini (). on doit verifier dans notre code que c bien facebook qui appelle cette url
   let challenge = req.query['hub.challenge'];
 
   // Checks if a token and mode is in the query string of the request
