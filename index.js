@@ -57,7 +57,7 @@ app.use(bodyParser.urlencoded());
     for (let entry of body.entry){
       let event = entry.messaging[0];
        if(event.message){
-         console.console.log(event.message.text);
+         console.log(event.message.text);
        }
       else{
         console.log(event);
