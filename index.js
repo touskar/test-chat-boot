@@ -73,13 +73,15 @@ function sleep(ms) {
 
            let echo = event.message.is_echo;
 
+           console.log(JSON.stringify(event))
+
            if(!echo){
                try {
                    await sleep(2000);// marquer comme lue apres 2 second
                    await client.markSeen(event.sender.id);
 
 
-                   await sleep(1000);
+                   await sleep(2000);
                    client.sendSenderAction(USER_ID, 'typing_on');
 
                    await sleep(5000);
@@ -91,7 +93,7 @@ function sleep(ms) {
                            id: event.sender.id,
                        },
                        message: {
-                           text: `Hello ${sender.first_name} ${sender.last_name}`,
+                           text: `Hello ${sender.first_name} ${sender.last_name} From Boot`,
                        },
                    });
                } catch (e) {
