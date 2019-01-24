@@ -61,7 +61,7 @@ app.use(bodyParser.urlencoded());
 
     for (let entry of body.entry){
       let event = entry.messaging[0];
-       if(event.message){
+       if(event.message && !event.message.is_echo){
 
          console.log(JSON.stringify(event));
 
@@ -71,7 +71,7 @@ app.use(bodyParser.urlencoded());
                        id: event.sender.id,
                    },
                    message: {
-                       text: 'Hello!',
+                       text: 'Hello from Boot!',
                    },
                });
            } catch (e) {
