@@ -22,6 +22,34 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+async function handleMessage(event) {
+    let echo = event.message.is_echo;
+
+    console.log(JSON.stringify(event))
+
+    if(!echo){
+        try {
+            await sleep(2000);// marquer comme lue apres 2 second
+            await messengerClient.markSeen(event.sender.id);
+
+
+            await sleep(2000);
+            messengerClient.typingOn(event.sender.id);
+
+            await sleep(5000);
+
+            const sender = await facebookClient.get(event.sender.id);
+
+            await messengerClient.sendText(event.sender.id, `Hello ${sender.first_name} ${sender.last_name} From Boot`);
+
+            messengerClient.typingOff(event.sender.id);
+        } catch (e) {
+            messengerClient.typingOff(event.sender.id);
+            console.log(e)
+        }
+    }
+}
+
 (async () => {
 
   app.get('/', (req, res) => res.send('Hello World!'));
@@ -69,34 +97,7 @@ function sleep(ms) {
     for (let entry of body.entry){
       let event = entry.messaging[0];
        if(event.message){
-
-
-           let echo = event.message.is_echo;
-
-           console.log(JSON.stringify(event))
-
-           if(!echo){
-               try {
-                   await sleep(2000);// marquer comme lue apres 2 second
-                   await messengerClient.markSeen(event.sender.id);
-
-
-                   await sleep(2000);
-                   messengerClient.typingOn(event.sender.id);
-
-                   await sleep(5000);
-
-                   const sender = await facebookClient.get(event.sender.id);
-
-                   await messengerClient.sendText(event.sender.id, `Hello ${sender.first_name} ${sender.last_name} From Boot`);
-
-                   messengerClient.typingOff(event.sender.id);
-               } catch (e) {
-                   messengerClient.typingOff(event.sender.id);
-                   console.log(e)
-               }
-           }
-
+           let _ = handleMessage(event);
        }
     }
 
