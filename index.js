@@ -5,6 +5,7 @@ const app = express()
 const bodyParser = require('body-parser'); // parser les requete POST en JSON ou url-encoded,....
 const port = process.env.PORT || 3000; // sur heroku un port nous ai donne automatiquement via la variable d'environnement PORT.
 const { MessengerClient } = require('messaging-api-messenger');
+const FacebookGraph = require('facebookgraph');
 
 const messengerClient = MessengerClient.connect({
   accessToken,
@@ -12,8 +13,7 @@ const messengerClient = MessengerClient.connect({
   appSecret:'ee63ebeca674f09d67de10c28a73db59'
 });
 
-const FacebookGraph = require('facebookgraph');
-const graph = new FacebookGraph(accessToken);
+const facebookClient = new FacebookGraph(accessToken);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
@@ -86,7 +86,7 @@ function sleep(ms) {
 
                    await sleep(5000);
 
-                   const sender = await graph.get(event.sender.id);
+                   const sender = await facebookClient.get(event.sender.id);
 
                    await messengerClient.sendText(event.sender.id, `Hello ${sender.first_name} ${sender.last_name} From Boot`);
 
