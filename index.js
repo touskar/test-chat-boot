@@ -46,10 +46,25 @@ app.use(bodyParser.urlencoded());
 });
 
   app.post('/webhook', async(req, res) => {
-    let data = req.body;
-     console.log(data);
+    let body = req.body;
 
-     res.json(data); // on return ce que n'a recu
+  // Checks this is an event from a page subscription
+  if (body.object === 'page') // scope page
+  {
+    // Iterates over each entry - there may be multiple if batched
+    // will only ever contain one message, so we get index 0
+
+    for (let entry of body.entry){
+      let event = entry.messaging[0];
+      console.log(event);
+    }
+
+    // Returns a '200 OK' response to all requests
+    res.status(200).send('EVENT_RECEIVED');
+  } else {
+    // Returns a '404 Not Found' if event is not from a page subscription
+    res.sendStatus(404);
+  }
   })
 
 
