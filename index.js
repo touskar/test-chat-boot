@@ -62,16 +62,22 @@ app.use(bodyParser.urlencoded());
     for (let entry of body.entry){
       let event = entry.messaging[0];
        if(event.message){
-         console.log(event.message.text);
+         console.log(JSON.stringify(event));
 
-           await client.sendRawBody({
-               recipient: {
-                   id: event.sender.id,
-               },
-               message: {
-                   text: 'Hello!',
-               },
-           });
+
+
+           try {
+               client.sendRawBody({
+                   recipient: {
+                       id: event.sender.id,
+                   },
+                   message: {
+                       text: 'Hello!',
+                   },
+               });
+           } catch (e) {
+               console.log(e)
+           }
        }
       else{
         console.log(event);
