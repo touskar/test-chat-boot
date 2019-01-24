@@ -40,7 +40,7 @@ async function handleMessage(event) {
 
             const sender = await facebookClient.get(event.sender.id);
 
-            await messengerClient.sendText(event.sender.id, `Hello ${sender.first_name} ${sender.last_name} From Boot`);
+            await messengerClient.sendText(event.sender.id, `Bonjour ${sender.first_name} ${sender.last_name} du vient je m'envoyer ceci << ${event.message.text} >>`);
 
             messengerClient.typingOff(event.sender.id);
         } catch (e) {
