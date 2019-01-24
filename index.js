@@ -62,9 +62,8 @@ app.use(bodyParser.urlencoded());
     for (let entry of body.entry){
       let event = entry.messaging[0];
        if(event.message){
+
          console.log(JSON.stringify(event));
-
-
 
            try {
                client.sendRawBody({
