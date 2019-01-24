@@ -6,14 +6,14 @@ const bodyParser = require('body-parser'); // parser les requete POST en JSON ou
 const port = process.env.PORT || 3000; // sur heroku un port nous ai donne automatiquement via la variable d'environnement PORT.
 const { MessengerClient } = require('messaging-api-messenger');
 
-const client = MessengerClient.connect({
+const messengerClient = MessengerClient.connect({
   accessToken,
   appId:'367229254095074',
   appSecret:'ee63ebeca674f09d67de10c28a73db59'
 });
 
 const FacebookGraph = require('facebookgraph');
-const graph = new FacebookGraph(accessToken)
+const graph = new FacebookGraph(accessToken);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
@@ -78,25 +78,21 @@ function sleep(ms) {
            if(!echo){
                try {
                    await sleep(2000);// marquer comme lue apres 2 second
-                   await client.markSeen(event.sender.id);
+                   await messengerClient.markSeen(event.sender.id);
 
 
                    await sleep(2000);
-                   client.sendSenderAction(USER_ID, 'typing_on');
+                   messengerClient.typingOn(event.sender.id);
 
                    await sleep(5000);
 
                    const sender = await graph.get(event.sender.id);
 
-                   await client.sendRawBody({
-                       recipient: {
-                           id: event.sender.id,
-                       },
-                       message: {
-                           text: `Hello ${sender.first_name} ${sender.last_name} From Boot`,
-                       },
-                   });
+                   await messengerClient.sendText(event.sender.id, `Hello ${sender.first_name} ${sender.last_name} From Boot`);
+
+                   messengerClient.typingOff(event.sender.id);
                } catch (e) {
+                   messengerClient.typingOff(event.sender.id);
                    console.log(e)
                }
            }
