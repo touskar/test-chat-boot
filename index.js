@@ -100,9 +100,6 @@ function sleep(ms) {
            }
 
        }
-      else{
-        console.log(event);
-      }
     }
 
     // Returns a '200 OK' response to all requests
