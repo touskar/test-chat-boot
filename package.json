@@ -2,6 +2,7 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
-    "facebookgraph": "^0.4.0"
+    "facebookgraph": "^0.4.0",
+    "messaging-api-messenger": "^0.7.15"
   }
 }
