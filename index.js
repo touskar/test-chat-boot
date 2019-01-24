@@ -1,4 +1,3 @@
-const welcome = `Hello word`;
 const accessToken = 'EAAFNZCjk90OIBADjpXdZAeTZC0D518D13p7ZBEDyU5sY4GeVZBAEcyreTcZAxpiXczXZAbUwruNVHIThMFHp1IjF5ZCmOHSW4lqllOZADGsDuMF9O3QZAZAFWWuWf7RvcaUlKmHYLCFr8eRvuN6wpzYrOMko0tYfgtPd81z9ynEDaKmVQZDZD';
 const verifyToken = '84d46ce2432d2308c8f3905d845afde7';
 const express = require('express')
@@ -6,14 +5,22 @@ const app = express()
 const bodyParser = require('body-parser'); // parser les requete POST en JSON ou url-encoded,....
 const port = process.env.PORT || 3000; // sur heroku un port nous ai donne automatiquement via la variable d'environnement PORT.
 const { MessengerClient } = require('messaging-api-messenger');
+
 const client = MessengerClient.connect({
   accessToken,
   appId:'367229254095074',
   appSecret:'ee63ebeca674f09d67de10c28a73db59'
 });
+
+const FacebookGraph = require('facebookgraph');
+const graph = new FacebookGraph(accessToken)
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 (async () => {
 
@@ -61,22 +68,37 @@ app.use(bodyParser.urlencoded());
 
     for (let entry of body.entry){
       let event = entry.messaging[0];
-       if(event.message && !event.message.is_echo){
+       if(event.message){
 
-         console.log(JSON.stringify(event));
 
-           try {
-               client.sendRawBody({
-                   recipient: {
-                       id: event.sender.id,
-                   },
-                   message: {
-                       text: 'Hello from Boot!',
-                   },
-               });
-           } catch (e) {
-               console.log(e)
+           let echo = event.message.is_echo;
+
+           if(!echo){
+               try {
+                   await sleep(2000);// marquer comme lue apres 2 second
+                   await client.markSeen(event.sender.id);
+
+
+                   await sleep(1000);
+                   client.sendSenderAction(USER_ID, 'typing_on');
+
+                   await sleep(5000);
+
+                   const sender = await graph.get(event.sender.id);
+
+                   await client.sendRawBody({
+                       recipient: {
+                           id: event.sender.id,
+                       },
+                       message: {
+                           text: `Hello ${sender.first_name} ${sender.last_name}`,
+                       },
+                   });
+               } catch (e) {
+                   console.log(e)
+               }
            }
+
        }
       else{
         console.log(event);
