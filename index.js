@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded());
 
   app.get('/', (req, res) => res.send('Hello World!'))
 
-  app.post('/webhook', async(req, body) => {
+  app.post('/webhook', async(req, res) => {
     let data = req.body;
      console.log(data);
 
